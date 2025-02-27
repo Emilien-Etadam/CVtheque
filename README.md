@@ -36,20 +36,34 @@ CV Manager est une application web légère développée en PHP qui permet de g�
    git clone https://github.com/votre-username/cv-manager.git
    ```
 
-2. Assurez-vous que les permissions sont correctement configurées :
+2. Créez les dossiers nécessaires s'ils n'existent pas déjà :
+   ```bash
+   mkdir -p cv-manager/uploads cv-manager/temp
+   ```
+
+3. Assurez-vous que les permissions sont correctement configurées :
    ```bash
    chmod 755 -R cv-manager
    chmod 777 -R cv-manager/uploads
    chmod 777 -R cv-manager/temp
-   chmod 777 cv-manager/cv.db
    ```
 
-3. Accédez à l'application via votre navigateur :
+4. Accédez à l'application via votre navigateur :
    ```
    http://votre-serveur/cv-manager/
    ```
 
-L'application créera automatiquement la base de données et les tables nécessaires lors de la première utilisation.
+L'application créera automatiquement la base de données SQLite (`cv.db`) et les tables nécessaires lors de la première utilisation.
+
+### Note sur le versionnement Git
+
+Ce projet utilise un fichier `.gitignore` pour exclure certains fichiers et dossiers du dépôt Git :
+
+- La base de données SQLite (`*.db`, `*.sqlite`, `*.sqlite3`)
+- Le contenu des dossiers d'uploads et temporaires (`/uploads/*`, `/temp/*`)
+- Les fichiers système et de configuration d'IDE
+
+Ces fichiers et dossiers seront créés automatiquement lors de l'utilisation de l'application.
 
 ## 🔧 Configuration
 
