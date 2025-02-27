@@ -1,6 +1,6 @@
 # CV Manager
 
-Une application très simple en PHP pour gérer les CV et les candidatures.
+Une application très simple en PHP pour gérer les CV et les candidatures codée par IA 
 
 ![Gestionnaire de CV](https://img.shields.io/badge/Application-Gestion%20CV-blue)
 ![PHP](https://img.shields.io/badge/PHP-8.0+-green)
