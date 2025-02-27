@@ -55,20 +55,6 @@ CV Manager est une application web légère développée en PHP qui permet de g�
 
 L'application créera automatiquement la base de données SQLite (`cv.db`) et les tables nécessaires lors de la première utilisation.
 
-### Note sur le versionnement Git
-
-Ce projet utilise un fichier `.gitignore` pour exclure certains fichiers et dossiers du dépôt Git :
-
-- La base de données SQLite (`*.db`, `*.sqlite`, `*.sqlite3`)
-- Le contenu des dossiers d'uploads et temporaires (`/uploads/*`, `/temp/*`)
-- Les fichiers système et de configuration d'IDE
-
-Ces fichiers et dossiers seront créés automatiquement lors de l'utilisation de l'application.
-
-## 🔧 Configuration
-
-Aucune configuration supplémentaire n'est nécessaire pour une utilisation de base. La base de données SQLite est créée automatiquement.
-
 ## 📖 Utilisation
 
 ### Ajouter un candidat
