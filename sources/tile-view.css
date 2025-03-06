@@ -1,0 +1,261 @@
+/**
+ * Styles pour la vue en tuiles du gestionnaire de CV
+ */
+
+/* Container principal des tuiles */
+.tile-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px;
+    --tile-scale: 1;
+}
+
+/* Carte individuelle pour chaque candidat */
+.candidate-tile {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    transform: scale(var(--tile-scale));
+    transform-origin: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.candidate-tile:hover {
+    transform: scale(calc(var(--tile-scale) * 1.02));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* En-tête de la tuile */
+.tile-header {
+    padding: 12px;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.tile-name {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2d3748;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tile-position {
+    font-size: 14px;
+    color: #4a5568;
+    margin-bottom: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Statuts */
+.tile-status {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-Accepté {
+    background-color: #c6f6d5;
+    color: #22543d;
+}
+
+.status-Refusé {
+    background-color: #fed7d7;
+    color: #742a2a;
+}
+
+.status-En-cours {
+    background-color: #fefcbf;
+    color: #744210;
+}
+
+/* Zone de prévisualisation du PDF */
+.tile-pdf-preview {
+    height: 200px;
+    background-color: #f7fafc;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-thumbnail {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.pdf-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #718096;
+    font-size: 14px;
+}
+
+/* Overlay pour les commentaires */
+.tile-comments-hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    color: white;
+    padding: 12px;
+    font-size: 12px;
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+}
+
+.tile-pdf-preview:hover .tile-comments-hover {
+    opacity: 1;
+}
+
+/* Overlay pour le statut */
+.tile-status-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+/* Overlay pour les actions */
+.tile-actions-overlay {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.tile-pdf-preview:hover .tile-actions-overlay {
+    opacity: 1;
+}
+
+.tile-action {
+    background-color: white;
+    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    color: #4a5568;
+    transition: background-color 0.2s;
+}
+
+.tile-action:hover {
+    background-color: #edf2f7;
+}
+
+.tile-action.delete:hover {
+    background-color: #fed7d7;
+    color: #e53e3e;
+}
+
+/* Pied de la tuile */
+.tile-footer {
+    padding: 12px;
+    border-top: 1px solid #edf2f7;
+    margin-top: auto;
+}
+
+.tile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tile-email {
+    font-size: 13px;
+    color: #3182ce;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tile-email:hover {
+    text-decoration: underline;
+}
+
+.tile-date {
+    font-size: 12px;
+    color: #718096;
+}
+
+/* Adaptation au thème sombre */
+[data-theme="dark"] .candidate-tile {
+    background-color: #2d3748;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .tile-header {
+    border-bottom-color: #4a5568;
+}
+
+[data-theme="dark"] .tile-name {
+    color: #f7fafc;
+}
+
+[data-theme="dark"] .tile-position {
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .tile-pdf-preview {
+    background-color: #4a5568;
+}
+
+[data-theme="dark"] .tile-pdf-loading {
+    color: #cbd5e0;
+}
+
+[data-theme="dark"] .tile-footer {
+    border-top-color: #4a5568;
+}
+
+[data-theme="dark"] .tile-date {
+    color: #cbd5e0;
+}
+
+[data-theme="dark"] .tile-action {
+    background-color: #4a5568;
+    color: #e2e8f0;
+}
+
+[data-theme="dark"] .tile-action:hover {
+    background-color: #2d3748;
+}
+
+[data-theme="dark"] .tile-action.delete:hover {
+    background-color: #742a2a;
+    color: #fed7d7;
+}
+
+/* Vue en tuiles pour les petits écrans */
+@media (max-width: 768px) {
+    .tile-container {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .tile-pdf-preview {
+        height: 150px;
+    }
+}

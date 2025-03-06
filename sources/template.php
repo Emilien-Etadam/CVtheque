@@ -8,6 +8,7 @@
     <!-- Feuilles de style -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="darkmode.css" rel="stylesheet">
+    <link href="tile-view.css" rel="stylesheet">
     <!-- Scripts externes -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -64,7 +65,29 @@
         <div class="flex flex-col md:flex-row gap-2">
             <!-- Liste des candidats (colonne gauche) -->
             <div class="w-full md:w-1/2 bg-white p-3 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4">Liste des candidats</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold">Liste des candidats</h2>
+                    <div class="view-toggle">
+                        <span class="view-toggle-label">Affichage:</span>
+                        <div class="view-toggle-buttons">
+                            <button id="tableViewBtn" type="button" class="view-toggle-button active">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18M3 18h18M3 6h18" />
+                                </svg>
+                                Tableau
+                            </button>
+                            <button id="tileViewBtn" type="button" class="view-toggle-button">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                </svg>
+                                Tuiles
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 
                 <!-- Formulaire de filtrage -->
                 <div class="mb-3 bg-gray-50 p-2 rounded-lg">
@@ -105,7 +128,68 @@
                     </form>
                 </div>
                 
-                <div class="overflow-x-auto">
+                <!-- Vue en tuiles -->
+                <div id="tileView" class="hidden">
+                    <!-- Contrôles de zoom -->
+                    <div id="zoomControls" class="hidden mb-4 flex justify-center items-center space-x-2">
+                        <button id="zoomOutBtn" type="button" class="p-1 bg-gray-200 rounded hover:bg-gray-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                        <span class="text-sm">Zoom</span>
+                        <button id="zoomInBtn" type="button" class="p-1 bg-gray-200 rounded hover:bg-gray-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="tile-container">
+                        <?php if ($candidates): $candidates->reset(); while ($candidate = $candidates->fetchArray(SQLITE3_ASSOC)): ?>
+                        <div class="candidate-tile" data-id="<?= $candidate['id'] ?>">
+                            <div class="tile-header">
+                                <div class="tile-name"><?= htmlspecialchars($candidate['name']) ?></div>
+                                <div class="tile-position"><?= htmlspecialchars($candidate['position']) ?></div>
+                                <div class="tile-status status-<?= str_replace(' ', '-', $candidate['status']) ?>"><?= htmlspecialchars($candidate['status']) ?></div>
+                            </div>
+                            
+                            <div class="tile-pdf-preview">
+                                <canvas class="pdf-thumbnail" data-pdf-path="<?= htmlspecialchars($candidate['cv_path']) ?>"></canvas>
+                                <div class="pdf-loading">Chargement...</div>
+                                <?php if (!empty($candidate['comments'])): ?>
+                                <div class="tile-comments-hover"><?= nl2br(htmlspecialchars($candidate['comments'])) ?></div>
+                                <?php endif; ?>
+                                <div class="tile-status-overlay">
+                                    <div class="tile-status status-<?= str_replace(' ', '-', $candidate['status']) ?>"><?= htmlspecialchars($candidate['status']) ?></div>
+                                </div>
+                                <div class="tile-actions-overlay">
+                                    <a href="javascript:void(0)" onclick="toggleEdit(<?= $candidate['id'] ?>)" class="tile-action" title="Éditer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <a href="?delete=<?= $candidate['id'] ?>" class="tile-action delete" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce candidat ?')">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="tile-footer">
+                                <div class="tile-info">
+                                    <a href="mailto:<?= htmlspecialchars($candidate['email']) ?>" class="tile-email"><?= htmlspecialchars($candidate['email']) ?></a>
+                                    <span class="tile-date">Date: <?= htmlspecialchars($candidate['application_date']) ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endwhile; endif; ?>
+                    </div>
+                </div>
+                
+                <!-- Vue en tableau -->
+                <div id="tableView" class="overflow-x-auto">
                     <table class="w-full">
                         <thead class="bg-gray-50">
                             <tr>
@@ -261,6 +345,7 @@
         </div>
     </div>
 
+    <script src="tile-view.js"></script>
     <script>
         // Configurer le chemin du worker PDF.js
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
