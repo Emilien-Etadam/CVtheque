@@ -18,7 +18,7 @@ CV Manager est une application web légère développée en PHP qui permet de g�
 - 📊 Gestion des candidats (ajout, modification, suppression)
 - 🏷️ Suivi du statut des candidatures (Nouveau, En cours, Entretien planifié, Accepté, Refusé)
 - 🔎 Filtrage des candidats par statut et poste
-- 📄 Visualisation des CV directement dans l'application
+- 📄 Visualisation des CV directement dans l'application en vue liste ou tuile
 - 🌓 Mode sombre/clair
 
 ## 🚀 Installation
@@ -55,56 +55,6 @@ CV Manager est une application web légère développée en PHP qui permet de g�
 
 L'application créera automatiquement la base de données SQLite (`cv.db`) et les tables nécessaires lors de la première utilisation.
 
-### Note sur le versionnement Git
-
-Ce projet utilise un fichier `.gitignore` pour exclure certains fichiers et dossiers du dépôt Git :
-
-- La base de données SQLite (`*.db`, `*.sqlite`, `*.sqlite3`)
-- Le contenu des dossiers d'uploads et temporaires (`/uploads/*`, `/temp/*`)
-- Les fichiers système et de configuration d'IDE
-
-Ces fichiers et dossiers seront créés automatiquement lors de l'utilisation de l'application.
-
-## 🔧 Configuration
-
-Aucune configuration supplémentaire n'est nécessaire pour une utilisation de base. La base de données SQLite est créée automatiquement.
-
-## 📖 Utilisation
-
-### Ajouter un candidat
-
-1. Sur la page d'accueil, utilisez la zone de dépôt de fichier pour uploader un CV au format PDF
-2. L'application extraira automatiquement les informations disponibles dans le PDF
-3. Complétez les informations manquantes dans le formulaire
-4. Cliquez sur "Ajouter le candidat"
-
-### Gérer les candidats
-
-- **Visualiser un CV** : Cliquez sur l'icône "œil" à côté du candidat
-- **Modifier les informations** : Cliquez sur l'icône "crayon" pour éditer les détails
-- **Changer le statut** : Utilisez le menu déroulant dans la colonne "Statut"
-- **Supprimer un candidat** : Cliquez sur l'icône "corbeille" (cette action supprime également le fichier PDF)
-
-### Filtrer les candidats
-
-Utilisez les filtres en haut de la liste des candidats pour afficher uniquement les candidats correspondant à certains critères (statut, poste).
-
-## 🧩 Structure du projet
-
-```
-cv-manager/
-├── add_candidate.php    # Formulaire d'ajout de candidat
-├── cv.db                # Base de données SQLite
-├── darkmode.css         # Styles pour le mode sombre
-├── db.php               # Gestion de la connexion à la base de données
-├── extract_cv.php       # Fonctions d'extraction des informations des PDF
-├── index.php            # Page principale de l'application
-├── template.php         # Template HTML principal
-├── upload_pdf.php       # Gestion de l'upload des fichiers PDF
-├── uploads/             # Répertoire de stockage des CV
-└── temp/                # Répertoire temporaire pour les uploads
-```
-
 ## 🔒 Sécurité
 
 - Les noms de fichiers sont générés de manière unique pour éviter les collisions
@@ -120,11 +70,6 @@ Vous pouvez modifier la liste des statuts disponibles en éditant la variable `$
 ```php
 $statuses = ['Nouveau', 'En cours', 'Entretien planifié', 'Accepté', 'Refusé'];
 ```
-
-### Apparence
-
-Le style de l'application peut être personnalisé en modifiant les fichiers CSS :
-- `darkmode.css` pour les styles du mode sombre/clair
 
 ## 📝 Licence
 
